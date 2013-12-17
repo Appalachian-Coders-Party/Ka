@@ -1,0 +1,5 @@
+{
+	"require": {
+		"ezyang/htmlpurifier": "v4.6.0"
+	}
+}
