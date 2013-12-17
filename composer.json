@@ -1,5 +1,8 @@
 {
 	"require": {
-		"ezyang/htmlpurifier": "v4.6.0"
+		"ezyang/htmlpurifier": "v4.6.0",
+		"components/jquery": "1.9.1",
+		"twbs/bootstrap": "v3.0.3",
+		"facebook/php-sdk": "v3.2.3"
 	}
 }
