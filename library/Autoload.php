@@ -2,14 +2,14 @@
 
 function ka_autoloader($className)
 {
-    if (file_exists(BASE.'/application/controllers/'.$className.'.php'))
+    if (file_exists(APPLICATION.'/controllers/'.$className.'.php'))
     {
-        require_once(BASE.'/application/controllers/'.$className.'.php');
+        require_once(APPLICATION.'/controllers/'.$className.'.php');
     }
 
-    if (file_exists(BASE.'/application/models/'.$className.'.php'))
+    if (file_exists(APPLICATION.'/models/'.$className.'.php'))
     {
-        require_once(BASE.'/application/models/'.$className.'.php');
+        require_once(APPLICATION.'/models/'.$className.'.php');
     }
 
     if (file_exists(KA.'/library/'.$className.'.php'))
