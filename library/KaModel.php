@@ -24,15 +24,21 @@
                 }
             } else if (is_numeric($data) && (is_int($data))) {
                 // It is an integer so load from the db using $data an key
-                $query=$this->db_connect->prepare("SELECT * FROM $this->table WHERE id = :id");
+				$sql="SELECT * FROM $this->table WHERE id = :id";
+				echo $sql;
+                $query=$this->db_connect->prepare($sql);
+				echo var_dump($query);
                 $query->bindParam(':id', $data);
                 $query->execute();
                 $result=$query->fetch(PDO::FETCH_ASSOC);
 
-                foreach ($result AS $key=>$value)
-                {
-					$this->fields[$key]=$value;
-                }
+				if ($result)
+				{
+					foreach ($result AS $key=>$value)
+					{
+						$this->fields[$key]=$value;
+					}
+				}
             }
         }
 
@@ -86,7 +92,7 @@
                 }
                 $sql.=" WHERE id=:id";
 
-		$tempfields['id']=$record_id;
+				$tempfields['id']=$record_id;
                 foreach ($tempfields AS $key=>$value)
                 {
                     $tempfields[':'.$key]=$tempfields[$key];

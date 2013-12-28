@@ -11,10 +11,14 @@
 		$template=ob_get_contents();
 		ob_end_clean();
 
-        foreach ($GLOBALS['view_stack'] as $key => $value)
-        {
-            $template=str_replace('{__'.$key.'__}', $value, $template);
-        }
+		if (isset($_GLOBALS['view_stack'])) 
+		{
+			foreach ($GLOBALS['view_stack'] as $key => $value)
+			{
+				$template=str_replace('{__'.$key.'__}', $value, $template);
+			}
+		}
+
         echo $template;
     }
 ?>
