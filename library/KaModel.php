@@ -25,9 +25,7 @@
             } else if (is_numeric($data) && (is_int($data))) {
                 // It is an integer so load from the db using $data an key
 				$sql="SELECT * FROM $this->table WHERE id = :id";
-				echo $sql;
                 $query=$this->db_connect->prepare($sql);
-				echo var_dump($query);
                 $query->bindParam(':id', $data);
                 $query->execute();
                 $result=$query->fetch(PDO::FETCH_ASSOC);
