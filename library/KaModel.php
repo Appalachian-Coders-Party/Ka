@@ -128,6 +128,7 @@
                 $sql="INSERT INTO $this->table (".implode(', ',$fieldlist).") VALUES (".$pdo_string.")";
                 $query=$this->db_connect->prepare($sql);
                 $query->execute($tempfields);
+				$this->fields['id']=$this->db_connect->lastInsertId();
             }
         }
 
