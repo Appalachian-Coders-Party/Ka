@@ -22,7 +22,7 @@
                 {
                     $this->fields[$key]=$value;
                 }
-            } else if (is_numeric($data) && (is_int($data))) {
+            } else if (is_numeric($data)) {
                 // It is an integer so load from the db using $data an key
 				$sql="SELECT * FROM $this->table WHERE id = :id";
                 $query=$this->db_connect->prepare($sql);
