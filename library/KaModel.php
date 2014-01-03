@@ -8,21 +8,31 @@
 
         public function __construct($class_name)
         {
-            $this->table=$class_name;
-            $this->dbConnect();
-            $this->fields=$this->getDBFields();
+			$this->table=$class_name;
+			$this->dbConnect();
+			$this->fields=$this->getDBFields();
         }
+
+		static public function is_assoc($array) {
+			if (is_array($array))
+			{
+				return (bool)count(array_filter(array_keys($array), 'is_string'));
+			} else {
+				return 0;
+			}
+		}
 
         public function load($data)
         {
             // Check to see if it is an array
-            if (is_array($data))
+            if ($this->is_assoc($data))
             {
                 foreach ($data AS $key=>$value)
                 {
                     $this->fields[$key]=$value;
                 }
-            } else if (is_numeric($data)) {
+            } else if (is_numeric($data) && ($data > 0)) {
+				$data=intval($data);
                 // It is an integer so load from the db using $data an key
 				$sql="SELECT * FROM $this->table WHERE id = :id";
                 $query=$this->db_connect->prepare($sql);
@@ -34,14 +44,18 @@
 				{
 					foreach ($result AS $key=>$value)
 					{
-						$this->fields[$key]=$value;
+						if (isset($this->fields[$key]))
+						{
+							$this->fields[$key]=$value;
+						}
 					}
 				}
-            }
+            } else {
+				return 0;
+			}
         }
 
-
-        public function query($sql,$params=0)
+        private function query($sql,$params=0)
         {
             // Add the ':' to the params key
             if (is_array($params))
@@ -66,10 +80,11 @@
         public function save()
         {
             // Check to see if the id is set
-            if (is_numeric($this->fields["id"]) && is_int($this->fields["id"]))
+            if (is_numeric($this->fields["id"]))
             {
+				$id=intval($this->fields["id"]);
                 // It is set, so just update the record
-                $record_id=$this->fields['id'];
+                $record_id=$id;
                 $tempfields=$this->fields;
                 unset($tempfields['id']);
 
@@ -136,9 +151,14 @@
         {
             if (is_numeric($this->fields['id']))
             {
+				$id=intval($this->fields['id']);
                 $query=$this->db_connect->prepare("DELETE FROM $this->table WHERE id=:id");
                 $query->execute(array(":id"=>$this->fields['id']));
-            }
+
+				$this->fields=$this->getDBFields();
+            } else {
+				return 0;
+			}
         }
 
         public function getFields()
@@ -151,12 +171,15 @@
             $query=$this->db_connect->prepare("DESCRIBE $this->table");
             $query->execute();
             $columns=$query->fetchAll(PDO::FETCH_COLUMN);
+
             $fields=array();
             foreach ($columns AS $key=>$value)
             {
                 $fields[$value]='';
             }
-            return $fields;
+			
+			return $fields;
+
         }
 
         public function dbConnect()

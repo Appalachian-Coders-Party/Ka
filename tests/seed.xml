@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<dataset>
+    <table name="users">
+	        <column>id</column>
+			<column>name</column>
+			<column>email</column>
+			<column>number</column>
+			<row>
+				<value>1</value>
+				<value>Colin</value>
+				<value>colin@email.com</value>
+				<value>36</value>
+			</row>
+			<row>
+				<value>2</value>
+				<value>Kyle</value>
+				<value>kyle@email.com</value>
+				<value>33</value>
+			</row>
+			<row>
+				<value>3</value>
+				<value>Jo</value>
+				<value>jo@email.com</value>
+				<value>31</value>
+			</row>
+	</table>
+</dataset>
