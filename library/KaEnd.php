@@ -11,7 +11,7 @@
 		$template=ob_get_contents();
 		ob_end_clean();
 
-		if (isset($_GLOBALS['view_stack'])) 
+		if (isset($GLOBALS['view_stack'])) 
 		{
 			foreach ($GLOBALS['view_stack'] as $key => $value)
 			{
