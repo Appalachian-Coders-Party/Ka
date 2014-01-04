@@ -55,7 +55,7 @@
 			}
         }
 
-        private function query($sql,$params=0)
+        protected function query($sql,$params=0)
         {
             // Add the ':' to the params key
             if (is_array($params))
