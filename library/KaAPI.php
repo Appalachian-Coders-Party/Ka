@@ -4,17 +4,21 @@ class KaAPI
     private $uri;           // the entire passed uri
     private $controller;    // the controller object from the url (string)
     private $action;        // the action from the url (string)
-    private $params;        // the rest of the parameters from the url (array)
+    private $params;        // the rest of the parameters from the http body (php input)
 	private $auth_id;
 	private $auth_secret;
 
     public function __construct($urlUri, $auth_id=null, $auth_secret=null)
     {
+
 		$apiuser=new APIUsers;
 		if ($apiuser->login($auth_id,$auth_secret))
 		{
 			// Turn of the templates for API use
 			$GLOBALS['use_template']=0;
+		
+			// Set the params from the php://input
+			$this->setParams(file_get_contents('php://input'));
 
 			// Parse the passed URI into an array
 			$urlArray=$this->parseUri($urlUri);
@@ -26,7 +30,6 @@ class KaAPI
 			$this->setController($urlArray);
 			$this->setAction($urlArray);
 
-
 			// Test to see if the controller and action exist
 			try 
 			{
@@ -36,9 +39,8 @@ class KaAPI
 				} else {
 					$controller=new $this->controller;
 				}
-
-				if (!method_exists($controller,$this->action))
-				{
+				
+				if (!method_exists($controller,$this->action)) {
 					throw new Exception($this->action."We don't like the url you requested.");
 				}
 
@@ -53,6 +55,15 @@ class KaAPI
 		}
     }
 
+	public function setParams($http_body)
+	{
+		// this must be a json string
+		$http_body=json_decode($http_body, true);
+		if (json_last_error() == JSON_ERROR_NONE)
+		{
+			$this->params=$http_body;
+		}
+	}
 
     public function setController($urlArray)
     {
@@ -70,7 +81,10 @@ class KaAPI
         $urlArray[0]=ucfirst($urlArray[0]).'Controller';
 
         // Get the action and create 'actionParam'
-        $urlArray[1]='action'.ucfirst($urlArray[1]);
+		if (!is_numeric($urlArray[1]))
+		{
+			$urlArray[1]='action'.ucfirst($urlArray[1]);
+		}
 
         return $urlArray;
     }
@@ -97,8 +111,11 @@ class KaAPI
         }
 
         // Check to see if an action was passed
-        if (empty($urlArray[1]))
+        if (empty($urlArray[1]) || (isset($urlArray[1]) && is_numeric($urlArray[1])))
         {
+			if (isset($urlArray[1]) && is_numeric($urlArray[1])) {
+				$this->params['id']=$urlArray[1];
+			}
 			// No controller so check the request method for CRUD
 			if ($_SERVER['REQUEST_METHOD']=='POST') {
             	$urlArray[1]='post';
