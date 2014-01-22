@@ -29,7 +29,6 @@ class KaAPI
 			// Setters
 			$this->setController($urlArray);
 			$this->setAction($urlArray);
-
 			// Test to see if the controller and action exist
 			try 
 			{
@@ -37,6 +36,7 @@ class KaAPI
 				{
 					throw new Exception("We don't like the url you requested.");
 				} else {
+
 					$controller=new $this->controller;
 				}
 				
@@ -91,6 +91,20 @@ class KaAPI
 
     private function parseUri($urlUri)
     {
+		// Split in case of parameters after the ?
+		$split=explode('?', $urlUri);
+		if (is_array($split))
+		{
+			parse_str($split[1], $query);
+			if (is_array($this->params))
+			{
+				$this->params=$this->params+$query;
+			} else{
+				$this->params=$query;
+			}
+			$urlUri=$split[0];
+		}
+
         // Caste as string and strip any shitty characters
         $this->uri=(string)preg_replace('/\?.+$/i','',$urlUri);
 
