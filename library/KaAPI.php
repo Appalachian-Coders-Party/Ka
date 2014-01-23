@@ -93,7 +93,7 @@ class KaAPI
     {
 		// Split in case of parameters after the ?
 		$split=explode('?', $urlUri);
-		if (is_array($split))
+		if (isset($split[1]))
 		{
 			parse_str($split[1], $query);
 			if (is_array($this->params))

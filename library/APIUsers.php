@@ -8,7 +8,7 @@
 
 		public function login($username,$password)
 		{
-			$result=$this->query('SELECT * FROM apiusers WHERE username=:username AND password=:password', array('username'=>$username, 'password'=>$password));
+			$result=$this->query('SELECT * FROM apiuser WHERE username=:username AND password=:password', array('username'=>$username, 'password'=>$password));
 			if (count($result))
 			{
 				return true;

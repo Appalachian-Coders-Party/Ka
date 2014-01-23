@@ -22,7 +22,7 @@
 			}
 		}
 
-        public function load($data)
+        public function load($data=null)
         {
             // Check to see if it is an array
             if ($this->is_assoc($data))
@@ -40,7 +40,7 @@
                 $query->execute();
                 $result=$query->fetch(PDO::FETCH_ASSOC);
 
-				if ($result)
+				if (is_array($result))
 				{
 					foreach ($result AS $key=>$value)
 					{
@@ -87,8 +87,6 @@
                 $record_id=$id;
                 $tempfields=$this->fields;
                 unset($tempfields['id']);
-
-
 
                 $sql="UPDATE $this->table SET ";
                 $count=count($tempfields);
@@ -146,6 +144,11 @@
 				$this->fields['id']=$this->db_connect->lastInsertId();
             }
         }
+
+		public function getId()
+		{
+			return $this->fields["id"];
+		}
 
         public function delete()
         {
