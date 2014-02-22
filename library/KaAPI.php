@@ -8,49 +8,40 @@ class KaAPI
 	private $auth_id;
 	private $auth_secret;
 
-    public function __construct($urlUri, $auth_id=null, $auth_secret=null)
+    public function __construct($urlUri, $auth_id=null, $auth_secret=null, $token=null)
     {
+		// Turn of the templates for API use
+		$GLOBALS['use_template']=0;
+	
+		// Set the params from the php://input
+		$this->setParams(file_get_contents('php://input'));
 
-		$apiuser=new APIUsers;
-		if ($apiuser->login($auth_id,$auth_secret))
+		// Parse the passed URI into an array
+		$urlArray=$this->parseUri($urlUri);
+
+		// Add 'controller' and 'action' strings
+		$urlArray=$this->addPrepends($urlArray);
+
+		// Setters
+		$this->setController($urlArray);
+		$this->setAction($urlArray);
+		// Test to see if the controller and action exist
+		try 
 		{
-			// Turn of the templates for API use
-			$GLOBALS['use_template']=0;
-		
-			// Set the params from the php://input
-			$this->setParams(file_get_contents('php://input'));
-
-			// Parse the passed URI into an array
-			$urlArray=$this->parseUri($urlUri);
-
-			// Add 'controller' and 'action' strings
-			$urlArray=$this->addPrepends($urlArray);
-
-			// Setters
-			$this->setController($urlArray);
-			$this->setAction($urlArray);
-			// Test to see if the controller and action exist
-			try 
+			if (!class_exists($this->controller))
 			{
-				if (!class_exists($this->controller))
-				{
-					throw new Exception("We don't like the url you requested.");
-				} else {
+				throw new Exception("We don't like the url you requested.");
+			} else {
 
-					$controller=new $this->controller;
-				}
-				
-				if (!method_exists($controller,$this->action)) {
-					throw new Exception($this->action."We don't like the url you requested.");
-				}
-
-			} catch(Exception $e) {
-				include(KA.'/error_docs/Exception.php');
-				exit();
+				$controller=new $this->controller;
 			}
-		} else {
-			// API User Validation failed
-			echo 'API Access Denied';
+			
+			if (!method_exists($controller,$this->action)) {
+				throw new Exception($this->action."We don't like the url you requested.");
+			}
+
+		} catch(Exception $e) {
+			include(KA.'/error_docs/Exception.php');
 			exit();
 		}
     }
