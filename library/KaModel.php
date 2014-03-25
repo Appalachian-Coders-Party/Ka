@@ -2,7 +2,7 @@
     class KaModel
     {
         private $table;
-        private $fields;
+        protected $fields;
         private $db_connect;
 		private $errors;
 

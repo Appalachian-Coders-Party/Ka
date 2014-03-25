@@ -8,12 +8,15 @@ class KaAPI
 	private $auth_id;
 	private $auth_secret;
 
-    public function __construct($urlUri, $auth_id=null, $auth_secret=null, $token=null)
+    public function __construct($urlUri, $auth_id=null, $auth_secret=null)
     {
 		// Turn of the templates for API use
 		$GLOBALS['use_template']=0;
 	
 		// Set the params from the php://input
+		//echo var_dump(file_get_contents('php://input'));
+		//print json_encode(array('test'=>1));
+		//exit();
 		$this->setParams(file_get_contents('php://input'));
 
 		// Parse the passed URI into an array
