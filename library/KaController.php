@@ -12,6 +12,11 @@
 			return $contents;
 		}
 
+		public function renderData($well, $data)
+		{
+			$GLOBALS['view_stack'][$well]=$data;
+		}
+
         public function render($view, $well, $data=array())
         {
             if ($this->viewExists($view))

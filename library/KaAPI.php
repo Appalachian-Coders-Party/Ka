@@ -14,9 +14,6 @@ class KaAPI
 		$GLOBALS['use_template']=0;
 	
 		// Set the params from the php://input
-		//echo var_dump(file_get_contents('php://input'));
-		//print json_encode(array('test'=>1));
-		//exit();
 		$this->setParams(file_get_contents('php://input'));
 
 		// Parse the passed URI into an array
@@ -33,7 +30,7 @@ class KaAPI
 		{
 			if (!class_exists($this->controller))
 			{
-				throw new Exception("We don't like the url you requested.");
+				throw new Exception($this->controller."We don't like the url you requested.");
 			} else {
 
 				$controller=new $this->controller;
@@ -61,7 +58,14 @@ class KaAPI
 
     public function setController($urlArray)
     {
-        $this->controller=$urlArray[0];
+		/*
+		if ($urlArray[0]=='test')
+		{
+			$GLOBALS['use_test_db']=1;
+			array_shift($urlArray);
+		}
+		*/
+		$this->controller=$urlArray[0];
     }
 
     public function setAction($urlArray)
@@ -107,6 +111,13 @@ class KaAPI
 
         // Remove the empty first element
         array_shift($urlArray);
+
+		// Check to see if this is a test api
+		if ($urlArray[0]=='test')
+		{
+			$GLOBALS['use_test_db']=1;
+			array_shift($urlArray);
+		}
 
         // Apply php function urldecode to each element
         $urlArray=array_map('urldecode', $urlArray);

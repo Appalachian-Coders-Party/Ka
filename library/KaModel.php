@@ -285,7 +285,14 @@
 
         public function dbConnect()
         {
-            $this->db_connect=new PDO("mysql:host=".DATABASE_HOST.";dbname=".DATABASE_NAME,DATABASE_USERNAME,DATABASE_PASSWORD);
+			// If this is a test use the test db as defined in config.php
+			if ($GLOBALS['use_test_db'])
+			{
+				$db_name=TEST_DATABASE_NAME;
+			} else {
+				$db_name=DATABASE_NAME;
+			}
+            $this->db_connect=new PDO("mysql:host=".DATABASE_HOST.";dbname=".$db_name,DATABASE_USERNAME,DATABASE_PASSWORD);
             $this->db_connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $this->db_connect->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
         }
