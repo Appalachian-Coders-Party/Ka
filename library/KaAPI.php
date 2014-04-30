@@ -5,11 +5,13 @@ class KaAPI
     private $controller;    // the controller object from the url (string)
     private $action;        // the action from the url (string)
     private $params;        // the rest of the parameters from the http body (php input)
-	private $auth_id;
-	private $auth_secret;
+	private $api_program_name;
 
-    public function __construct($urlUri, $auth_id=null, $auth_secret=null)
+    public function __construct($urlUri, $program_name)
     {
+		// Get the api program
+		$this->api_program_name=$program_name;
+
 		// Turn of the templates for API use
 		$GLOBALS['use_template']=0;
 	
@@ -32,14 +34,12 @@ class KaAPI
 			{
 				throw new Exception($this->controller."We don't like the url you requested.");
 			} else {
-
 				$controller=new $this->controller;
 			}
 			
 			if (!method_exists($controller,$this->action)) {
 				throw new Exception($this->action."We don't like the url you requested.");
 			}
-
 		} catch(Exception $e) {
 			include(KA.'/error_docs/Exception.php');
 			exit();
@@ -153,8 +153,29 @@ class KaAPI
         return $urlArray;
     }
 
+	public function checkApiPerms($controller,$action,$program_name)
+	{
+		// Check to see if there are any access restrictions
+		$permissions=json_decode(file_get_contents(API_PERMS), true);
+		
+		// If the permission is set - else don't worry about permissions
+		if (isset($permissions[$controller][$action]) && (is_array($permissions[$controller][$action])) && (count($permissions[$controller][$action])))
+		{
+			if (in_array($program_name, $permissions[$controller][$action]))
+			{
+				// Ok you have permission
+			} else {
+				echo 'You do not have permission to consume this resource';
+				exit;
+			}
+		}
+	}
+
     public function go()
     {
+		// Check the permissions
+		$this->checkApiPerms($this->controller, $this->action, $this->api_program_name);
+
         $controller=new $this->controller;
         call_user_func(array($controller, $this->action),$this->params);
     }
