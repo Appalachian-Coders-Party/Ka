@@ -7,10 +7,10 @@
 		private $errors;
 
 
-        public function __construct($class_name)
+        public function __construct($class_name, $db=NULL)
         {
 			$this->table=$class_name;
-			$this->dbConnect();
+			$this->dbConnect($db);
 			$this->fields=$this->getDBFields();
         }
 
@@ -283,14 +283,19 @@
 
         }
 
-        public function dbConnect()
+        public function dbConnect($db)
         {
 			// If this is a test use the test db as defined in config.php
 			if ($GLOBALS['use_test_db'])
 			{
 				$db_name=TEST_DATABASE_NAME;
 			} else {
-				$db_name=DATABASE_NAME;
+				if (is_null($db))
+				{
+					$db_name=DATABASE_NAME;
+				} else {
+					$db_name=$db;
+				}
 			}
             $this->db_connect=new PDO("mysql:host=".DATABASE_HOST.";dbname=".$db_name,DATABASE_USERNAME,DATABASE_PASSWORD);
             $this->db_connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);

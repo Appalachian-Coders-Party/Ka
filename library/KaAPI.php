@@ -58,13 +58,6 @@ class KaAPI
 
     public function setController($urlArray)
     {
-		/*
-		if ($urlArray[0]=='test')
-		{
-			$GLOBALS['use_test_db']=1;
-			array_shift($urlArray);
-		}
-		*/
 		$this->controller=$urlArray[0];
     }
 
@@ -115,7 +108,6 @@ class KaAPI
 		// Check to see if this is a test api
 		if ($urlArray[0]=='test')
 		{
-			$GLOBALS['use_test_db']=1;
 			array_shift($urlArray);
 		}
 
@@ -166,6 +158,7 @@ class KaAPI
 				// Ok you have permission
 			} else {
 				echo 'You do not have permission to consume this resource';
+				http_response_code(401);
 				exit;
 			}
 		}
