@@ -2,6 +2,14 @@
     // We have to make this class to handle the views and shits
     class KaController
     {
+		public function getDbName($client_id)
+		{
+			$client_model=new Client;
+			$client_model->load($client_id);
+			$fields=$client_model->getFields();
+			return $fields['db'];
+		}
+
 		public function renderInternal($view, $data=array())
 		{
 			ob_start();
