@@ -149,7 +149,7 @@ class KaAPI
 	{
 		// Check to see if there are any access restrictions
 		$permissions=json_decode(file_get_contents(API_PERMS), true);
-		
+
 		// If the permission is set - else don't worry about permissions
 		if (isset($permissions[$controller][$action]) && (is_array($permissions[$controller][$action])) && (count($permissions[$controller][$action])))
 		{

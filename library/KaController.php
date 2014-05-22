@@ -34,7 +34,7 @@
                 $GLOBALS['view_stack'][$well]=ob_get_contents();
                 ob_end_clean();
             } else {
-				echo "view does not exit";
+				echo "the view, ".$view.",  does not exist";;
 				exit();
 			}
         }
