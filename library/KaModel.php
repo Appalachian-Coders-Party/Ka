@@ -304,7 +304,7 @@
 
         public function getTable()
         {
-            return strtolower($this->table);
+            return $this->table;
         }
 
 		// Validation Functions
