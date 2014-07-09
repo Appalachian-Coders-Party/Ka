@@ -361,6 +361,13 @@
 								$no_error=0;
 							}
 						}
+						if ($rule=='uniqueField')
+						{
+							if (!$this->uniqueField($key))
+							{
+								$no_error=0;
+							}
+						}
 					}
 				}
 				return $no_error;
@@ -421,6 +428,24 @@
 				return 1;
 			}
 		}
+
+		public function uniqueField($key)
+		{
+			$sql="
+				SELECT *
+				FROM ".$this->getTable()."
+				WHERE ".$key."=:".$key;
+			$data=array($key=>$this->fields[$key]);
+			$match=$this->query($sql, $data);
+
+			if (count($match))
+			{
+				$this->addError($key,"not unique");	
+				return 0;
+			} else {
+				return 1;
+			}
+		}	
 
 		public function addError($key,$error_message)
 		{

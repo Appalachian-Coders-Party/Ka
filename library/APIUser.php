@@ -16,7 +16,6 @@
 				{
 					// Set the api user
 					$this->load($result[0]['id']);
-
 					return true;
 				} else {
 					return false;
