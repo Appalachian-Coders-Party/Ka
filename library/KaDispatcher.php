@@ -4,21 +4,43 @@ class KaDispatcher
     private $uri;           // the entire passed uri
     private $controller;    // the controller object from the url (string)
     private $action;        // the action from the url (string)
-    private $params;        // the rest of the parameters from the url (array)
+    protected $params;        // the rest of the parameters from the url (array)
 
     public function __construct($urlUri)
     {
-        // Parse the passed URI into an array
-        $urlArray=$this->parseUri($urlUri);
+		// Remove the Base Slug if one is set in the config file
+		if (defined('BASE_SLUG') && BASE_SLUG != '')
+		{
+			$reg='/^\\'.BASE_SLUG.'/';
+			$urlUri=preg_replace($reg,'',$urlUri);
+		}
 
-        // Add 'controller' and 'action' strings
-        $urlArray=$this->addPrepends($urlArray);
+		if (defined('PRETTY_URL') && PRETTY_URL==1)
+		{
+			$pretty=new KaUrl;
+			$pretty->load(array('slug'=>$urlUri));
+			$mvc=$pretty->get();
+			if (count($mvc))
+			{
+				$urlUri='/'.$mvc[0]['controller'].'/'.$mvc[0]['action'];
+				if (!empty($mvc[0]['params']))
+				{
+					$urlUri.='/'.$mvc[0]['params'];
+				}
+			}
+		}
 
-        // Setters
-        $this->setController($urlArray);
-        $this->setAction($urlArray);
-        $this->setParams($urlArray);
+		// Parse the passed URI into an array
+		$urlArray=$this->parseUri($urlUri);
 
+		// Add 'controller' and 'action' strings
+		$urlArray=$this->addPrepends($urlArray);
+
+
+		// Setters
+		$this->setController($urlArray);
+		$this->setAction($urlArray);
+		$this->setParams($urlArray);
 
         // Test to see if the controller and action exist
         try 
@@ -40,6 +62,10 @@ class KaDispatcher
             exit();
         }
     }
+
+	public function prettyUrl()
+	{
+	}
 
     public function setParams($urlArray)
     {
