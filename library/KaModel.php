@@ -6,6 +6,20 @@
         private $db_connect;
 		private $errors;
 
+		public function beginTransaction()
+		{
+			$this->db_connect->beginTransaction();
+		}
+
+		public function commit()
+		{
+			$this->db_connect->commit();
+		}
+
+		public function rollBack()
+		{
+			$this->db_connect->rollBack();
+		}
 
         public function __construct($class_name, $db=NULL)
         {
@@ -42,7 +56,6 @@
 			       
 			$query_string=$this->fieldsToQuery();
 			$sql.=(!empty($query_string)?' WHERE '.$query_string:'');
-			              
 			$query_result=$this->query($sql,$this->getFields());
 				              
 			return $query_result;
@@ -92,10 +105,10 @@
             {
                 foreach ($data AS $key=>$value)
                 {
-					if (isset($this->fields[$key]))
-					{
+					//if (isset($this->fields[$key]))
+					//{
 						$this->fields[$key]=$value;
-					}
+					//}
                 }
 				return 1;
             } else if (is_numeric($data) && ($data > 0)) {
