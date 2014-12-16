@@ -175,7 +175,13 @@
                 $record_id=$id;
                 $tempfields=$this->fields;
                 unset($tempfields['id']);
-
+				if (isset($this->ignore))
+				{	
+					foreach($this->ignore AS $i=>$v)
+					{
+						unset($tempfields[$v]);
+					}
+				}
                 $sql="UPDATE $this->table SET ";
                 $count=count($tempfields);
                 $i=0;
@@ -205,6 +211,13 @@
                 $tempfields=$this->populatedFields();
                 // take out the id field if it was set, because we don't need it for a new record
                 unset($tempfields["id"]);
+				if (isset($this->ignore))
+				{	
+					foreach($this->ignore AS $i=>$v)
+					{
+						unset($tempfields[$v]);
+					}
+				}
 
                 $fieldlist=array_keys($tempfields);
 
