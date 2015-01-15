@@ -147,7 +147,7 @@
             {
             	foreach($params AS $key=>$value)
 				{
-					if (!empty($value)) 
+					if (!empty($value) || $value==0) 
 					{
 						$params[':'.$key]=$value;
 					}
