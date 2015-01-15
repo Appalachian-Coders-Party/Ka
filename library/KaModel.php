@@ -58,6 +58,10 @@
 			$sql.=(!empty($query_string)?' WHERE '.$query_string:'');
 			$query_result=$this->query($sql,$this->getFields());
 				              
+							  echo $sql;
+							  echo $query_string;
+							  echo var_dump($query_result);
+							  exit;
 			return $query_result;
 		}   
 
@@ -147,12 +151,13 @@
             {
             	foreach($params AS $key=>$value)
 				{
-					if (!empty($value) || $value==0) 
+					if (!empty($value) || $value===0) 
 					{
 						$params[':'.$key]=$value;
 					}
 					unset($params[$key]);
 				}    
+				echo var_dump($params);
             }
 			$query=$this->db_connect->prepare($sql);
 			if (is_array($params)) 
